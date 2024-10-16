@@ -48,6 +48,17 @@
             transition: transform 0.3s ease;
         }
 
+        .collection-button::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.8)); /* Градиент */
+            z-index: 1;
+        }
+
         .collection-button:hover {
             transform: scale(1.05);
         }
@@ -57,20 +68,24 @@
             bottom: 20px;
             font-size: 14px;
             text-transform: none;
+            z-index: 2; /* Текст поверх градиента */
+        }
+
+        .collection-button div {
+            z-index: 2; /* Текст поверх градиента */
         }
 
         .women {
-            background-image: url('/images/women.jpg'); /* Изменено */
+            background-image: url('/images/women.jpg');
         }
 
         .men {
-            background-image: url('/images/men.jpg'); /* Изменено */
+            background-image: url('/images/men.jpg');
         }
 
         .teens {
-            background-image: url('/images/teens.jpg'); /* Изменено */
+            background-image: url('/images/teens.jpg');
         }
-
     </style>
 </head>
 <body>
@@ -81,17 +96,18 @@
     <!-- Кнопки-изображения для категорий -->
     <div class="button-container">
         <div class="collection-button women" onclick="window.location.href='/women-collection.html'">
-            Для женщин
+            <div>Для женщин</div>
             <span>Посмотреть коллекцию</span>
         </div>
         <div class="collection-button men" onclick="window.location.href='/men-collection.html'">
-            Для мужчин
+            <div>Для мужчин</div>
             <span>Посмотреть коллекцию</span>
         </div>
         <div class="collection-button teens" onclick="window.location.href='/teens-collection.html'">
-            Для тинейджеров
+            <div>Для тинейджеров</div>
             <span>Посмотреть коллекцию</span>
         </div>
+        
     </div>
 
 </body>
