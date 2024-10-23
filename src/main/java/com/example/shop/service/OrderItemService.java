@@ -1,3 +1,4 @@
+/*
 package com.example.shop.service;
 
 import com.example.shop.model.OrderItem;
@@ -33,3 +34,4 @@ public class OrderItemService {
         orderItemRepository.deleteById(id);
     }
 }
+*/

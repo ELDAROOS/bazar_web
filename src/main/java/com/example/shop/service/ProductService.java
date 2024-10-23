@@ -1,5 +1,6 @@
 package com.example.shop.service;
 
+import com.example.shop.model.Category;
 import com.example.shop.model.Product;
 import com.example.shop.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,10 @@ public class ProductService {
 
     public List<Product> findByName(String name){
         return productRepository.findByNameContaining(name);
+    }
+
+    public List<Product> findByCategory(Category category){
+        return productRepository.findByCategory(category);
     }
 
     @Transactional
