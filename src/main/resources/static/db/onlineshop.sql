@@ -51,7 +51,7 @@ CREATE TABLE addresses (
 
 --DROP TABLE users, categories, products, orders, order_items, addresses;
 
-INSERT INTO users (id, name, email, password_hash) VALUES
+INSERT INTO users (id, username, email, password_hash) VALUES
 (1, 'Иван Иванов', 'ivan@example.com', 'hashed_password_1'),
 (2, 'Анна Петрова', 'anna@example.com', 'hashed_password_2'),
 (3, 'Сергей Сергеев', 'sergey@example.com', 'hashed_password_3');
@@ -63,7 +63,7 @@ INSERT INTO categories (id, name, parent_id) VALUES
 (4, 'Мужская одежда', 1),
 (5, 'Женская одежда', 1);
 
-INSERT INTO products (id, name, description, price, stock_quantity, category_id) VALUES
+INSERT INTO product (product_id, name, description, price, stock_quantity, category_id) VALUES
 (1, 'Футболка', 'Классическая белая футболка', 19.99, 100, 4),
 (2, 'Джинсы', 'Синие джинсы прямого кроя', 39.99, 50, 4),
 (3, 'Платье', 'Летнее платье с цветочным принтом', 49.99, 30, 5),
@@ -80,6 +80,6 @@ INSERT INTO order_items (id, order_id, product_id, quantity, price) VALUES
 (2, 1, 2, 1, 39.99),  -- Джинсы для заказа Ивана
 (3, 2, 3, 1, 49.99);  -- Платье для заказа Анны
 
-INSERT INTO addresses (id, user_id, address_line, city, state, postal_code, country) VALUES
-(1, 1, 'Улица Ленина, 1', 'Москва', 'Москва', '101000', 'Россия'),
-(2, 2, 'Улица Пушкина, 2', 'Санкт-Петербург', 'Санкт-Петербург', '190000', 'Россия');
+INSERT INTO addresses (id, user_id, address_line, city, postal_code, country) VALUES
+(1, 1, 'Улица Ленина, 1', 'Москва', '101000', 'Россия'),
+(2, 2, 'Улица Пушкина, 2', 'Санкт-Петербург', '190000', 'Россия');

@@ -37,6 +37,19 @@ public class ProductService {
         return productRepository.findByCategory(category);
     }
 
+    public Product updateProduct(Long id, Product productDetails){
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Продукт не найден"));
+
+        product.setName(productDetails.getName());
+        product.setCategory(productDetails.getCategory());
+        product.setDescription(productDetails.getDescription());
+        product.setStockQuantity(productDetails.getStockQuantity());
+        product.setPrice(productDetails.getPrice());
+
+        return productRepository.save(product);
+    }
+
     @Transactional
     public void deleteProduct(Long id){
         productRepository.deleteById(id);
