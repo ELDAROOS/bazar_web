@@ -1,30 +1,28 @@
 package com.bazarweb.bazarweb.controller;
 
-import com.bazarweb.bazarweb.DTO.LoginRequest;
-import com.bazarweb.bazarweb.JWT.JwtService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
+import com.bazarweb.bazarweb.DTO.JwtAuthenticationResponse;
+import com.bazarweb.bazarweb.DTO.SignInRequest;
+import com.bazarweb.bazarweb.DTO.SignUpRequest;
+import com.bazarweb.bazarweb.service.AuthenticationService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @RestController
 @RequestMapping("/auth")
+@RequiredArgsConstructor
 public class AuthController {
+    private final AuthenticationService authenticationService;
 
-    @Autowired
-    private JwtService jwtService;
+    @PostMapping("/sign-up")
+    public JwtAuthenticationResponse signUp(@RequestBody SignUpRequest request) {
+        return authenticationService.signUp(request);
+    }
 
-    @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequest request) {
-        if ("user".equals(request.getUsername()) && "password".equals(request.getPassword())) {
-            String token = jwtService.generateToken(request.getUsername());
-            return RequestEntity.ok(token);
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    @PostMapping("/sign-in")
+    public JwtAuthenticationResponse signIn(@RequestBody SignInRequest request) {
+        return authenticationService.signIn(request);
     }
 }
