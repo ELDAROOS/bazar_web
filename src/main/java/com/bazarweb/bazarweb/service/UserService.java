@@ -1,22 +1,25 @@
 package com.bazarweb.bazarweb.service;
 
+import com.bazarweb.bazarweb.configuration.EncryptionConfiguration;
 import com.bazarweb.bazarweb.model.User;
 import com.bazarweb.bazarweb.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class UserService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final EncryptionConfiguration encryptionConfiguration; // Внедряем бина из конфигурации
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, EncryptionConfiguration encryptionConfiguration) {
         this.userRepository = userRepository;
+        this.encryptionConfiguration = encryptionConfiguration;
     }
 
     public User save(User user){
@@ -49,5 +52,20 @@ public class UserService {
         return getUserByUsername(username);
     }
 
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
 
+    public void updateProfile(String username, User updatedUser) {
+        User existingUser = findByUsername(username);
+        existingUser.setEmail(updatedUser.getEmail());
+
+        if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
+            String encodedPassword = encryptionConfiguration.passwordEncoder().encode(updatedUser.getPassword()); // Используем метод из EncryptionConfiguration
+            existingUser.setPassword(encodedPassword);
+        }
+
+        userRepository.save(existingUser);
+    }
 }
