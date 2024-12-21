@@ -68,4 +68,9 @@ public class UserService {
 
         userRepository.save(existingUser);
     }
+
+    public void deleteUser(String username) {
+        User user = findByUsername(username);
+        userRepository.delete(user);
+    }
 }
