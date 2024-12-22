@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,6 +32,12 @@ public class ProductController {
         }
         return ResponseEntity.ok(products);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Product> getProductById(@PathVariable int id) {
+        Product product = productService.getProductById(id);
+        return ResponseEntity.ok(product);
+    }
     
 
     @PostMapping("/create")
@@ -43,6 +50,12 @@ public class ProductController {
     public ResponseEntity<String> updateProduct(@PathVariable int id, @RequestBody Product updatedProduct) {
         productService.updateProduct(id, updatedProduct);
         return ResponseEntity.ok("Product updated successfully");
+    }
+
+    @DeleteMapping("delete/{id}")
+    public ResponseEntity<String> deleteProduct(@PathVariable int id) {
+        productService.deleteProduct(id);
+        return ResponseEntity.ok("Product deleted successfully");
     }
 
     

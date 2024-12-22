@@ -15,27 +15,34 @@ public class ProductService {
     public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
+    
     public Product save(Product product){
         return productRepository.save(product);
     }
+
     public Product productCreate(Product product){
         return save(product);
     }
+
     public Product getProductById(int id){
             return productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
     }
+
     public Product getByCode(int code){
         return productRepository.findByCode(code)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
     }
+
     public Product getByName(String name){
         return productRepository.findByName(name)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
     }
+
     public List<Product> getAllProducts(){
         return productRepository.findAll();
     }
+
     public void updateProduct(int id, Product updatedProduct) {
         var product = getProductById(id);
         product.setName(updatedProduct.getName());
@@ -44,6 +51,7 @@ public class ProductService {
         product.setQuantity(updatedProduct.getQuantity());
         productRepository.save(product);
     }
+
     public void deleteProduct(int id) {
         productRepository.deleteById(id);
     }

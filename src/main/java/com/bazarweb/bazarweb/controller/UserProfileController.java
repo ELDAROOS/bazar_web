@@ -27,7 +27,7 @@ public class UserProfileController {
         return ResponseEntity.ok(user);
     }
 
-    @PutMapping
+    @PutMapping("/update")
     public ResponseEntity<String> updateProfile(@RequestBody User updatedUser, Principal principal) {
         userService.updateProfile(principal.getName(), updatedUser);
         return ResponseEntity.ok("Profile updated successfully");
