@@ -39,6 +39,7 @@ public class Product {
     @Column(name = "quantity", nullable = false)
     private int quantity;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "product_status", nullable = false)
     private ProductStatus productStatus;
 

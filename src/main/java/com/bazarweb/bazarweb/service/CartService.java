@@ -1,11 +1,8 @@
 package com.bazarweb.bazarweb.service;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.bazarweb.bazarweb.enums.ProductStatus;
 import com.bazarweb.bazarweb.model.Cart;
-import com.bazarweb.bazarweb.model.CartItem;
 import com.bazarweb.bazarweb.model.Product;
 import com.bazarweb.bazarweb.model.User;
 import com.bazarweb.bazarweb.repository.CartRepository;
@@ -13,7 +10,6 @@ import com.bazarweb.bazarweb.repository.ProductRepository;
 import com.bazarweb.bazarweb.repository.UserRepository;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Optional;
 
 @Service
