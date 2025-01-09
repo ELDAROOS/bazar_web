@@ -1,6 +1,5 @@
 package com.bazarweb.bazarweb.controller;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +11,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bazarweb.bazarweb.DTO.OrderRequestDto;
 import com.bazarweb.bazarweb.exception.EmptyCartException;
 import com.bazarweb.bazarweb.model.Order;
 import com.bazarweb.bazarweb.service.OrderService;
@@ -32,17 +33,18 @@ public class OrderController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Order> createOrder(
-            @RequestParam String username,
-            @RequestParam BigDecimal deliveryCost,
-            @RequestParam String cardNumber) {
+    public ResponseEntity<Order> createOrder(@RequestBody OrderRequestDto request) {
         try {
-            Order order = orderService.createUserOrder(username, deliveryCost, cardNumber);
+            Order order = orderService.createUserOrder(
+                    request.getUsername(),
+                    request.getCardNumber()
+            );
             return ResponseEntity.status(HttpStatus.CREATED).body(order);
         } catch (IllegalArgumentException | EmptyCartException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
+
 
     @GetMapping("/user")
     public ResponseEntity<List<Order>> getUserOrders(@RequestParam String username) {

@@ -11,7 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -59,7 +58,7 @@ public class OrderService {
         }
     }
 
-    public Order createUserOrder(String username, BigDecimal deliveryCost, String cardNumber) {
+    public Order createUserOrder(String username, String cardNumber) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
@@ -70,7 +69,7 @@ public class OrderService {
             throw new EmptyCartException("Cart is empty");
         }
 
-        Order order = createNewOrder(user, cart, deliveryCost);
+        Order order = createNewOrder(user, cart);
         Bill bill = createBill(order, cardNumber);
         order.setBill(bill);
         orderRepository.save(order);
@@ -88,12 +87,12 @@ public class OrderService {
         orderRepository.save(order);
     }
 
-    private Order createNewOrder(User user, Cart cart, BigDecimal deliveryCost) {
+    private Order createNewOrder(User user, Cart cart) {
         return Order.builder()
                 .user(user)
                 .date(LocalDateTime.now())
                 .status(OrderStatus.IN_PROGRESS)
-                .total(cart.getTotalPrice().add(deliveryCost))
+                .total(cart.getTotalPrice())
                 .orderItems(null) // Items will be filled later
                 .build();
     }

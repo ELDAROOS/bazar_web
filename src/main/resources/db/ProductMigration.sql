@@ -14,6 +14,7 @@ INSERT INTO products (code, name, description, price, image, quantity, product_s
 (30002, 'Леггинсы для йоги', 'Эластичные леггинсы для занятий спортом.', 2499.50, 'images/yoga_leggings.jpg', 50, 'IN_STOCK', 3),
 (30003, 'Кроссовки для бега', 'Удобные кроссовки с амортизацией.', 8999.00, 'images/running_shoes.jpg', 30, 'IN_STOCK', 3);
 
+INSERT INTO products (code, name, description, price, image, quantity, product_status, category_id) VALUES
 -- Повседневная одежда
 (40001, 'Футболка базовая', 'Классическая белая футболка.', 999.00, 'images/tshirt.jpg', 200, 'IN_STOCK', 4),
 (40002, 'Джинсы Slim Fit', 'Узкие джинсы с эффектом потертостей.', 3499.99, 'images/jeans.jpg', 60, 'IN_STOCK', 4),
