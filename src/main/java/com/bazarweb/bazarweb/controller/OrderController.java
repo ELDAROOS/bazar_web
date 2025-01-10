@@ -2,7 +2,6 @@ package com.bazarweb.bazarweb.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bazarweb.bazarweb.DTO.OrderDTO;
 import com.bazarweb.bazarweb.DTO.OrderRequestDto;
 import com.bazarweb.bazarweb.exception.EmptyCartException;
 import com.bazarweb.bazarweb.model.Order;
@@ -27,16 +27,13 @@ public class OrderController {
 
     private final OrderService orderService;
 
-    @Autowired
     public OrderController(OrderService orderService) {
         this.orderService = orderService;
     }
 
     @PostMapping("/create")
     public ResponseEntity<Order> createOrder(@RequestBody OrderRequestDto request) {
-        try {
-            System.out.println("Received OrderRequestDto: " + request);
-            
+        try {            
             Order order = orderService.createUserOrder(
                     request.getUsername(),
                     request.getCardNumber()
@@ -48,13 +45,11 @@ public class OrderController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
-    
-
 
     @GetMapping("/user")
-    public ResponseEntity<List<Order>> getUserOrders(@RequestParam String username) {
+    public ResponseEntity<List<OrderDTO>> getUserOrders(@RequestParam String username) {
         try {
-            List<Order> orders = orderService.getUserOrders(username);
+            List<OrderDTO> orders = orderService.getUserOrders(username);
             return ResponseEntity.ok(orders);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);

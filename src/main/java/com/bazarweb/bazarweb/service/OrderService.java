@@ -1,12 +1,12 @@
 package com.bazarweb.bazarweb.service;
 
+import com.bazarweb.bazarweb.DTO.OrderDTO;
 import com.bazarweb.bazarweb.enums.OrderStatus;
 import com.bazarweb.bazarweb.exception.EmptyCartException;
 import com.bazarweb.bazarweb.model.*;
 import com.bazarweb.bazarweb.repository.CartRepository;
 import com.bazarweb.bazarweb.repository.OrderRepository;
 import com.bazarweb.bazarweb.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -22,16 +22,29 @@ public class OrderService {
     private final CartRepository cartRepository;
     private final OrderRepository orderRepository;
 
-    @Autowired
     public OrderService(CartRepository cartRepository, OrderRepository orderRepository, UserRepository userRepository) {
         this.cartRepository = cartRepository;
         this.userRepository = userRepository;
         this.orderRepository = orderRepository;
     }
-
-    public List<Order> getUserOrders(String username) {
+    
+    public List<OrderDTO> getUserOrders(String username) {
         Optional<User> user = userRepository.findByUsername(username);
-        return user.map(orderRepository::findByUser).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        return user.map(u -> orderRepository.findByUser(u)
+            .stream()
+            .map(this::toOrderDto)
+            .toList())
+            .orElseThrow(() -> new IllegalArgumentException("User not found"));
+    }
+
+    private OrderDTO toOrderDto(Order order) {
+        return OrderDTO.builder()
+            .id(order.getId())
+            .date(order.getDate())
+            .status(order.getStatus())
+            .total(order.getTotal())
+            .executed(order.isExecuted())
+            .build();
     }
 
     public Optional<Order> getOrder(int id) {

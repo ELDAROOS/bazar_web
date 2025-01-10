@@ -4,7 +4,6 @@ import com.bazarweb.bazarweb.configuration.EncryptionConfiguration;
 import com.bazarweb.bazarweb.model.User;
 import com.bazarweb.bazarweb.repository.UserRepository;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,7 +15,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final EncryptionConfiguration encryptionConfiguration; // Внедряем бина из конфигурации
 
-    @Autowired
     public UserService(UserRepository userRepository, EncryptionConfiguration encryptionConfiguration) {
         this.userRepository = userRepository;
         this.encryptionConfiguration = encryptionConfiguration;
@@ -72,5 +70,10 @@ public class UserService {
     public void deleteUser(String username) {
         User user = findByUsername(username);
         userRepository.delete(user);
+    }
+
+    public User findById(int id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User with id " + id + " not found"));
     }
 }
