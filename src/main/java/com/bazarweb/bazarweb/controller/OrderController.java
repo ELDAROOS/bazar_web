@@ -35,15 +35,20 @@ public class OrderController {
     @PostMapping("/create")
     public ResponseEntity<Order> createOrder(@RequestBody OrderRequestDto request) {
         try {
+            System.out.println("Received OrderRequestDto: " + request);
+            
             Order order = orderService.createUserOrder(
                     request.getUsername(),
                     request.getCardNumber()
             );
+            
             return ResponseEntity.status(HttpStatus.CREATED).body(order);
         } catch (IllegalArgumentException | EmptyCartException e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
+    
 
 
     @GetMapping("/user")

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bazarweb.bazarweb.DTO.CategoryDTO;
 import com.bazarweb.bazarweb.model.Category;
 import com.bazarweb.bazarweb.service.CategoryService;
 
@@ -36,10 +37,16 @@ public class CategoryController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<String> postMethodName(@RequestBody Category category) {
+    public ResponseEntity<String> postMethodName(@RequestBody CategoryDTO categoryDto) {
+        // Преобразование CategoryDto в Category
+        Category category = new Category();
+        category.setName(categoryDto.getName());
+        
         categoryService.categoryCreate(category);
+        
         return ResponseEntity.ok("Category created successfully");
     }
+    
 
     @PutMapping("path/{id}")
     public ResponseEntity<String> updateCategory(@PathVariable int id, @RequestBody Category updatedCategory) {
