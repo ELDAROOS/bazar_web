@@ -36,7 +36,7 @@ public class CategoryController {
         return ResponseEntity.ok(categories);
     }
 
-    @PostMapping("/create")
+    @PostMapping("/admin/create")
     public ResponseEntity<String> postMethodName(@RequestBody CategoryDTO categoryDto) {
         // Преобразование CategoryDto в Category
         Category category = new Category();
@@ -54,7 +54,7 @@ public class CategoryController {
         return ResponseEntity.ok("Category updated successfully");
     }
 
-    @DeleteMapping("delete/{id}")
+    @DeleteMapping("/admin/delete/{id}")
     public ResponseEntity<String> deleteCategory(@PathVariable int id) {
         categoryService.deleteCategory(id);
         return ResponseEntity.ok("Category deleted successfully");

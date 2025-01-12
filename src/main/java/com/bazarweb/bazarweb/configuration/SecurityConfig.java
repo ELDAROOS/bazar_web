@@ -2,7 +2,6 @@ package com.bazarweb.bazarweb.configuration;
 
 import com.bazarweb.bazarweb.JWT.JwtAuthFilter;
 import com.bazarweb.bazarweb.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -30,7 +29,6 @@ public class SecurityConfig {
     private final UserService userService;
     private final EncryptionConfiguration encryptionConfiguration;
 
-    @Autowired
     public SecurityConfig(JwtAuthFilter jwtAuthenticationFilter, UserService userService, EncryptionConfiguration encryptionConfiguration) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.userService = userService;

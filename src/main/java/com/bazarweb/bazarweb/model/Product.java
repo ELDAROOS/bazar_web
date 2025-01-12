@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.bazarweb.bazarweb.enums.ProductStatus;
 
@@ -33,9 +35,6 @@ public class Product {
     @Column(name = "price", nullable = false)
     private BigDecimal price;
     
-    @Column(name = "image")
-    private String image;
-    
     @Column(name = "quantity", nullable = false)
     private int quantity;
 
@@ -44,7 +43,10 @@ public class Product {
     private ProductStatus productStatus;
 
     @ManyToOne
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "category_id", nullable = false)
     private Category category;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Image> images = new ArrayList<>();
 
 }

@@ -12,8 +12,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.bazarweb.bazarweb.DTO.ProductDetailsDto;
 import com.bazarweb.bazarweb.model.Product;
+import com.bazarweb.bazarweb.model.Review;
 import com.bazarweb.bazarweb.service.ProductService;
+import com.bazarweb.bazarweb.service.ReviewService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 public class ProductController {
 
     private final ProductService productService;
+    private final ReviewService reviewService;
 
     @GetMapping
     public ResponseEntity<List<Product>> getAllProducts() {
@@ -34,25 +38,43 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable int id) {
+    public ResponseEntity<ProductDetailsDto> getProductById(@PathVariable int id) {
         Product product = productService.getProductById(id);
-        return ResponseEntity.ok(product);
+        List<Review> reviews = reviewService.getReviewsByProductId(id);
+        double averageRating = reviewService.calculateAverageRating(id);
+
+        ProductDetailsDto productDetails = ProductDetailsDto.builder()
+            .id(product.getId())
+            .code(product.getCode())
+            .name(product.getName())
+            .description(product.getDescription())
+            .price(product.getPrice())
+            .quantity(product.getQuantity())
+            .productStatus(product.getProductStatus())
+            .category(product.getCategory().getName())
+            //.imagePath(product.getImagePath())
+            .averageRating(averageRating)
+            .reviews(reviews)
+            .build();
+
+        return ResponseEntity.ok(productDetails);
     }
+
     
 
-    @PostMapping("/create")
+    @PostMapping("/admin/create")
     public ResponseEntity<String> createProduct(@RequestBody Product product) {
         productService.productCreate(product);
         return ResponseEntity.ok("Product created successfully");
     }
 
-    @PutMapping("edit/{id}")
+    @PutMapping("/admin/edit/{id}")
     public ResponseEntity<String> updateProduct(@PathVariable int id, @RequestBody Product updatedProduct) {
         productService.updateProduct(id, updatedProduct);
         return ResponseEntity.ok("Product updated successfully");
     }
 
-    @DeleteMapping("delete/{id}")
+    @DeleteMapping("/admin/delete/{id}")
     public ResponseEntity<String> deleteProduct(@PathVariable int id) {
         productService.deleteProduct(id);
         return ResponseEntity.ok("Product deleted successfully");
