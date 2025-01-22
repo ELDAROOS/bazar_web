@@ -49,4 +49,8 @@ public class ImageService {
             throw e;
         }
     }
+
+    public String getUploadDirectory() {
+        return uploadDirectory;
+    }    
 }

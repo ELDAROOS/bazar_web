@@ -1,31 +1,15 @@
-INSERT INTO products (code, name, description, price, image, quantity, product_status, category_id) VALUES
--- Уличная одежда
-(10001, 'Толстовка Oversize', 'Удобная толстовка с капюшоном, идеально подходит для прогулок.', 2999.99, 'images/hoodie.jpg', 50, 'IN_STOCK', 1),
-(10002, 'Джинсовая куртка', 'Классическая джинсовая куртка с карманами.', 4999.00, 'images/denim_jacket.jpg', 30, 'IN_STOCK', 1),
-(10003, 'Кроссовки Urban', 'Лёгкие и стильные кроссовки для уличного стиля.', 6999.99, 'images/sneakers.jpg', 20, 'IN_STOCK', 1),
+INSERT INTO products (code, name, description, price, quantity, product_status, category_id) VALUES
+-- Casual wear
+(40001, 'Basic T-shirt', 'Classic white T-shirt.', 999.00, 200, 'IN_STOCK', 4),
+(40002, 'Slim Fit Jeans', 'Tight jeans with a distressed effect.', 3499.99, 60, 'IN_STOCK', 4),
+(40003, 'Autumn Jacket', 'Warm jacket for cool weather.', 6999.00, 30, 'IN_STOCK', 4),
 
--- Классическая одежда
-(20001, 'Костюм-тройка', 'Элегантный мужской костюм для деловых встреч.', 15999.00, 'images/suit.jpg', 10, 'IN_STOCK', 2),
-(20002, 'Блузка с кружевами', 'Женская блузка с нежным кружевным узором.', 3999.50, 'images/blouse.jpg', 25, 'IN_STOCK', 2),
-(20003, 'Классические туфли', 'Черные кожаные туфли для офиса.', 7999.00, 'images/classic_shoes.jpg', 15, 'IN_STOCK', 2),
+-- Loungewear
+(50001, 'Cotton Pajamas', 'Comfortable pajamas made from natural material.', 2499.00, 40, 'IN_STOCK', 5),
+(50002, 'Terry Bathrobe', 'Warm bathrobe for home.', 3999.00, 20, 'IN_STOCK', 5),
+(50003, 'Home Slippers', 'Soft slippers for home.', 1299.00, 50, 'IN_STOCK', 5),
 
--- Спортивная одежда
-(30001, 'Футболка для тренировок', 'Дышащая футболка из лёгкого материала.', 1999.00, 'images/sports_tshirt.jpg', 100, 'IN_STOCK', 3),
-(30002, 'Леггинсы для йоги', 'Эластичные леггинсы для занятий спортом.', 2499.50, 'images/yoga_leggings.jpg', 50, 'IN_STOCK', 3),
-(30003, 'Кроссовки для бега', 'Удобные кроссовки с амортизацией.', 8999.00, 'images/running_shoes.jpg', 30, 'IN_STOCK', 3);
-
-INSERT INTO products (code, name, description, price, image, quantity, product_status, category_id) VALUES
--- Повседневная одежда
-(40001, 'Футболка базовая', 'Классическая белая футболка.', 999.00, 'images/tshirt.jpg', 200, 'IN_STOCK', 4),
-(40002, 'Джинсы Slim Fit', 'Узкие джинсы с эффектом потертостей.', 3499.99, 'images/jeans.jpg', 60, 'IN_STOCK', 4),
-(40003, 'Куртка на осень', 'Теплая куртка для прохладной погоды.', 6999.00, 'images/autumn_jacket.jpg', 30, 'IN_STOCK', 4),
-
--- Одежда для дома
-(50001, 'Пижама из хлопка', 'Удобная пижама из натурального материала.', 2499.00, 'images/pajamas.jpg', 40, 'IN_STOCK', 5),
-(50002, 'Халат махровый', 'Теплый халат для дома.', 3999.00, 'images/bathrobe.jpg', 20, 'IN_STOCK', 5),
-(50003, 'Домашние тапочки', 'Мягкие тапочки для дома.', 1299.00, 'images/slippers.jpg', 50, 'IN_STOCK', 5),
-
--- Одежда для детей
-(60001, 'Детская футболка', 'Яркая футболка для детей.', 799.00, 'images/kids_tshirt.jpg', 100, 'IN_STOCK', 6),
-(60002, 'Шорты для мальчиков', 'Удобные шорты с эластичным поясом.', 999.00, 'images/boys_shorts.jpg', 80, 'IN_STOCK', 6),
-(60003, 'Платье для девочек', 'Легкое платье с цветочным принтом.', 1999.00, 'images/girls_dress.jpg', 40, 'IN_STOCK', 6);
+-- Children's Clothing
+(60001, 'Children\ T-shirt', 'Bright T-shirt for children.', 799.00, 100, 'IN_STOCK', 6),
+(60002, 'Boys Shorts', 'Comfortable shorts with an elastic waistband.', 999.00, 80, 'IN_STOCK', 6),
+(60003, 'Girls Dress', 'Light dress with a floral print.', 1999.00, 40, 'IN_STOCK', 6);

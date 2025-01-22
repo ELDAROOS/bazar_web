@@ -1,7 +1,7 @@
 INSERT INTO category (name) VALUES 
-('Уличная одежда'),
-('Классическая одежда'),
-('Спортивная одежда'),
-('Повседневная одежда'),
-('Одежда для дома'),
-('Одежда для детей');
+('Streetwear'),
+('Classic Clothing'),
+('Sportswear'),
+('Casual Wear'),
+('Loungewear'),
+('Children Clothing');
