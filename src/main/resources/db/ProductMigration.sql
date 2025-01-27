@@ -10,6 +10,6 @@ INSERT INTO products (code, name, description, price, quantity, product_status, 
 (50003, 'Home Slippers', 'Soft slippers for home.', 1299.00, 50, 'IN_STOCK', 5),
 
 -- Children's Clothing
-(60001, 'Children\ T-shirt', 'Bright T-shirt for children.', 799.00, 100, 'IN_STOCK', 6),
+(60001, 'Child T-shirt', 'Bright T-shirt for children.', 799.00, 100, 'IN_STOCK', 6),
 (60002, 'Boys Shorts', 'Comfortable shorts with an elastic waistband.', 999.00, 80, 'IN_STOCK', 6),
 (60003, 'Girls Dress', 'Light dress with a floral print.', 1999.00, 40, 'IN_STOCK', 6);
