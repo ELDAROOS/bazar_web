@@ -2,6 +2,8 @@ package com.bazarweb.bazarweb.controller;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -26,6 +28,7 @@ import com.bazarweb.bazarweb.service.OrderService;
 public class OrderController {
 
     private final OrderService orderService;
+    private static final Logger logger = LoggerFactory.getLogger(OrderController.class);
 
     public OrderController(OrderService orderService) {
         this.orderService = orderService;
@@ -33,18 +36,34 @@ public class OrderController {
 
     @PostMapping("/create")
     public ResponseEntity<Order> createOrder(@RequestBody OrderRequestDto request) {
+        // Логируем полученные данные
+        logger.info("Received order creation request: username={}, cardNumber={}", request.getUsername(), request.getCardNumber());
+    
         try {            
             Order order = orderService.createUserOrder(
                     request.getUsername(),
                     request.getCardNumber()
             );
             
+            // Логируем успешное создание заказа
+            logger.info("Order successfully created for username={}: Order ID={}", request.getUsername(), order.getId());
+            
+            // Выводим информацию о заказе в консоль
+            logger.info("Created Order: {}", order);
+    
             return ResponseEntity.status(HttpStatus.CREATED).body(order);
         } catch (IllegalArgumentException | EmptyCartException e) {
+            // Логируем ошибку
+            logger.error("Failed to create order for username={}. Reason: {}", request.getUsername(), e.getMessage());
             e.printStackTrace();
+    
+            // Выводим ошибку в консоль
+            logger.error("Error details: {}", e.getMessage());
+    
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
+    
 
     @GetMapping("/user")
     public ResponseEntity<List<OrderDTO>> getUserOrders(@RequestParam String username) {

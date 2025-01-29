@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bazarweb.bazarweb.DTO.OrderDTO;
 import com.bazarweb.bazarweb.DTO.UserDTO;
+import com.bazarweb.bazarweb.enums.UserRole;
 import com.bazarweb.bazarweb.model.User;
 import com.bazarweb.bazarweb.service.UserService;
 
@@ -33,7 +34,7 @@ public class UserProfileController {
         List<OrderDTO> orderDTOs = user.getOrders().stream()
             .map(order -> new OrderDTO(order.getId(), order.getDate(), order.getStatus(), order.getTotal(), order.isExecuted()))
             .collect(Collectors.toList());
-        UserDTO userDTO = new UserDTO(user.getId(), user.getUsername(), user.getEmail(), user.getPhone(), user.getAddress(), orderDTOs);
+        UserDTO userDTO = new UserDTO(user.getId(), user.getUsername(), user.getEmail(), user.getPhone(), user.getAddress(), UserRole.USER, orderDTOs, false);
         return ResponseEntity.ok(userDTO);
     }
 

@@ -3,7 +3,6 @@ package com.bazarweb.bazarweb.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.bazarweb.bazarweb.DTO.ProductDetailsDto;
 import com.bazarweb.bazarweb.model.Product;
@@ -20,7 +20,7 @@ import com.bazarweb.bazarweb.service.ReviewService;
 
 import lombok.RequiredArgsConstructor;
 
-@Controller
+@RestController
 @RequestMapping("/api/product")
 @RequiredArgsConstructor
 public class ProductController {
@@ -28,7 +28,7 @@ public class ProductController {
     private final ProductService productService;
     private final ReviewService reviewService;
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<Product>> getAllProducts() {
         List<Product> products = productService.getAllProducts();
         if (products.isEmpty()) {

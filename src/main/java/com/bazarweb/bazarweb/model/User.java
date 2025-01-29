@@ -50,6 +50,9 @@ public class User implements UserDetails {
         return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
+    @Column(name = "blocked", nullable = false)
+    private boolean blocked;
+
     @Override
     public boolean isAccountNonExpired() {
         return true;
