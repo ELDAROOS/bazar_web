@@ -205,10 +205,13 @@ document.addEventListener("DOMContentLoaded", function () {
         return response.json();
     })
     .then(data => {
+        // Фильтрация данных, чтобы оставить только продукты с gender = 'MALE'
+        const maleProducts = data.filter(product => product.gender === 'MALE');
+
         const catalog = document.getElementById("catalog-items");
         catalog.innerHTML = "";
 
-        data.forEach(product => {
+        maleProducts.forEach(product => {
             const item = document.createElement("div");
             item.classList.add("catalog-item");
 
@@ -228,6 +231,7 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error("Ошибка загрузки данных:", error);
     });
 });
+
 
     </script>
 
