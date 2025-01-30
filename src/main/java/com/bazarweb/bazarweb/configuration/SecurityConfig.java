@@ -1,7 +1,7 @@
 package com.bazarweb.bazarweb.configuration;
 
-import com.bazarweb.bazarweb.JWT.JwtAuthFilter;
-import com.bazarweb.bazarweb.service.UserService;
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,13 +12,13 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
-import java.util.List;
-
-import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
+import com.bazarweb.bazarweb.JWT.JwtAuthFilter;
+import com.bazarweb.bazarweb.service.UserService;
 
 
 @Configuration
@@ -41,7 +41,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(request -> {
                     var corsConfiguration = new CorsConfiguration();
                     corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000")); // Исправлено
-                    corsConfiguration.setAllowedOrigins(List.of("http://localhost:60679"));  // Разрешаем Flutter Web
+                    corsConfiguration.setAllowedOrigins(List.of("http://localhost:52952"));  // Разрешаем Flutter Web
                     corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     corsConfiguration.setAllowedHeaders(List.of("*"));
                     corsConfiguration.setAllowCredentials(true); // Оставляем

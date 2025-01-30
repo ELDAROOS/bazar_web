@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BAZAR - Корзина</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Header styles */
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: white;
+            padding: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: black;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        /* Cart specific styles */
+        .cart-container {
+            max-width: 1200px;
+            margin: 100px auto 40px;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 2rem;
+        }
+
+        .cart-items {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .cart-summary {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+
+        .cart-item {
+            display: grid;
+            grid-template-columns: 120px 1fr auto;
+            gap: 1.5rem;
+            padding: 1.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .cart-item img {
+            width: 120px;
+            height: 160px;
+            object-fit: cover;
+        }
+
+        .item-details {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .item-title {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .item-price {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quantity-input {
+            width: 50px;
+            height: 30px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        .remove-btn {
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+            margin-bottom: 2rem;
+        }
+
+        .total-row {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 1rem;
+            background: black;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            text-transform: uppercase;
+        }
+
+        .btn:hover {
+            background: #333;
+        }
+
+        .promo-input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .empty-cart h2 {
+            margin-bottom: 1rem;
+        }
+
+        .continue-shopping {
+            color: black;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .cart-container {
+                grid-template-columns: 1fr;
+            }
+
+            .cart-item {
+                grid-template-columns: 100px 1fr;
+            }
+
+            .item-actions {
+                grid-column: 1 / -1;
+                justify-content: space-between;
+                margin-top: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">BAZAR</div>
+            <div class="nav-links">
+                <a href="#">Женщины</a>
+                <a href="#">Мужчины</a>
+                <a href="#">Новинки</a>
+                <a href="#">Распродажа</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="cart-container">
+        <div class="cart-items">
+            <h1>Корзина</h1>
+            <div class="cart-item">
+                <img src="/api/placeholder/120/160" alt="Платье">
+                <div class="item-details">
+                    <div>
+                        <h3 class="item-title">Платье летнее</h3>
+                        <p>Размер: M</p>
+                        <p>Цвет: Белый</p>
+                    </div>
+                    <p class="item-price">4 999 ₽</p>
+                </div>
+                <div class="item-actions">
+                    <div class="quantity-controls">
+                        <button class="quantity-btn" onclick="updateQuantity(1, -1)">-</button>
+                        <input type="number" class="quantity-input" value="1" min="1" max="10">
+                        <button class="quantity-btn" onclick="updateQuantity(1, 1)">+</button>
+                    </div>
+                    <button class="remove-btn" onclick="removeItem(1)">✕</button>
+                </div>
+            </div>
+
+            <div class="cart-item">
+                <img src="/api/placeholder/120/160" alt="Джинсы">
+                <div class="item-details">
+                    <div>
+                        <h3 class="item-title">Джинсы классические</h3>
+                        <p>Размер: 30/32</p>
+                        <p>Цвет: Синий</p>
+                    </div>
+                    <p class="item-price">7 999 ₽</p>
+                </div>
+                <div class="item-actions">
+                    <div class="quantity-controls">
+                        <button class="quantity-btn" onclick="updateQuantity(2, -1)">-</button>
+                        <input type="number" class="quantity-input" value="1" min="1" max="10">
+                        <button class="quantity-btn" onclick="updateQuantity(2, 1)">+</button>
+                    </div>
+                    <button class="remove-btn" onclick="removeItem(2)">✕</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="cart-summary">
+            <h2>Сумма заказа</h2>
+            <div class="summary-row">
+                <span>Товары (2)</span>
+                <span>12 998 ₽</span>
+            </div>
+            <div class="summary-row">
+                <span>Доставка</span>
+                <span>Бесплатно</span>
+            </div>
+            <div class="summary-row">
+                <input type="text" class="promo-input" placeholder="Промокод">
+                <button class="btn" onclick="applyPromo()">Применить</button>
+            </div>
+            <div class="summary-row total-row">
+                <span>Итого</span>
+                <span>12 998 ₽</span>
+            </div>
+            <button class="btn" onclick="checkout()">Оформить заказ</button>
+        </div>
+    </div>
+
+    <script>
+        function updateQuantity(itemId, change) {
+            const input = event.target.parentElement.querySelector('.quantity-input');
+            let value = parseInt(input.value) + change;
+            value = Math.max(1, Math.min(10, value));
+            input.value = value;
+            updateTotal();
+        }
+
+        function removeItem(itemId) {
+            const item = event.target.closest('.cart-item');
+            item.remove();
+            updateTotal();
+            
+            // Проверяем, остались ли товары в корзине
+            const items = document.querySelectorAll('.cart-item');
+            if (items.length === 0) {
+                showEmptyCart();
+            }
+        }
+
+        function showEmptyCart() {
+            const cartItems = document.querySelector('.cart-items');
+            cartItems.innerHTML = `
+                <div class="empty-cart">
+                    <h2>Корзина пуста</h2>
+                    <p>Добавьте товары из каталога</p>
+                    <a href="#" class="continue-shopping">Продолжить покупки</a>
+                </div>
+            `;
+            document.querySelector('.cart-summary').style.display = 'none';
+        }
+
+        function updateTotal() {
+            // В реальном проекте здесь был бы пересчет стоимости
+            console.log('Updating total...');
+        }
+
+        function applyPromo() {
+            const promoInput = document.querySelector('.promo-input');
+            alert(`Промокод ${promoInput.value} применен!`);
+        }
+
+        function checkout() {
+            alert('Переход к оформлению заказа...');
+            // Здесь будет переход на страницу оформления заказа
+        }
+    </script>
+</body>
+</html>

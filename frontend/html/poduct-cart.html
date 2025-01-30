@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BAZAR - Платье летнее</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Header styles */
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: white;
+            padding: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: black;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        /* Product page styles */
+        .product-container {
+            max-width: 1200px;
+            margin: 100px auto 40px;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        .product-gallery {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .gallery-image {
+            width: 100%;
+            height: 600px;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .product-info {
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        .product-title {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 2rem;
+        }
+
+        .product-description {
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .size-selector {
+            margin-bottom: 2rem;
+        }
+
+        .size-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .size-options {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .size-option {
+            width: 50px;
+            height: 50px;
+            border: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .size-option.selected {
+            border-color: black;
+            background: black;
+            color: white;
+        }
+
+        .color-selector {
+            margin-bottom: 2rem;
+        }
+
+        .color-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .color-options {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .color-option {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .color-option.selected::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border: 2px solid black;
+            border-radius: 50%;
+        }
+
+        .quantity-selector {
+            margin-bottom: 2rem;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .quantity-btn {
+            width: 40px;
+            height: 40px;
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .quantity-input {
+            width: 60px;
+            height: 40px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        .add-to-cart {
+            width: 100%;
+            padding: 1rem;
+            background: black;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .add-to-wishlist {
+            width: 100%;
+            padding: 1rem;
+            background: white;
+            color: black;
+            border: 1px solid black;
+            cursor: pointer;
+            font-size: 1rem;
+            text-transform: uppercase;
+        }
+
+        .product-details {
+            margin-top: 2rem;
+        }
+
+        .details-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .details-text {
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .product-container {
+                grid-template-columns: 1fr;
+            }
+
+            .product-gallery {
+                grid-template-columns: 1fr;
+            }
+
+            .gallery-image {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">BAZAR</div>
+            <div class="nav-links">
+                <a href="#">Женщины</a>
+                <a href="#">Мужчины</a>
+                <a href="#">Новинки</a>
+                <a href="#">Распродажа</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="product-container">
+        <div class="product-gallery">
+            <img src="/api/placeholder/600/800" alt="Платье вид спереди" class="gallery-image">
+            <img src="/api/placeholder/600/800" alt="Платье вид сзади" class="gallery-image">
+            <img src="/api/placeholder/600/800" alt="Платье детали" class="gallery-image">
+            <img src="/api/placeholder/600/800" alt="Платье на модели" class="gallery-image">
+        </div>
+
+        <div class="product-info">
+            <h1 class="product-title">Платье летнее</h1>
+            <p class="product-price">4 999 ₽</p>
+            
+            <p class="product-description">
+                Легкое летнее платье из натурального хлопка. Свободный крой, 
+                V-образный вырез и короткие рукава создают элегантный и комфортный образ. 
+                Идеально подходит для жарких летних дней.
+            </p>
+
+            <div class="color-selector">
+                <span class="color-label">Цвет</span>
+                <div class="color-options">
+                    <div class="color-option selected" style="background: white; border: 1px solid #ddd;" onclick="selectColor(this)"></div>
+                    <div class="color-option" style="background: #000;" onclick="selectColor(this)"></div>
+                    <div class="color-option" style="background: #B76E79;" onclick="selectColor(this)"></div>
+                </div>
+            </div>
+
+            <div class="size-selector">
+                <span class="size-label">Размер</span>
+                <div class="size-options">
+                    <div class="size-option" onclick="selectSize(this)">XS</div>
+                    <div class="size-option selected" onclick="selectSize(this)">S</div>
+                    <div class="size-option" onclick="selectSize(this)">M</div>
+                    <div class="size-option" onclick="selectSize(this)">L</div>
+                    <div class="size-option" onclick="selectSize(this)">XL</div>
+                </div>
+            </div>
+
+            <div class="quantity-selector">
+                <span class="size-label">Количество</span>
+                <div class="quantity-controls">
+                    <button class="quantity-btn" onclick="updateQuantity(-1)">-</button>
+                    <input type="number" class="quantity-input" value="1" min="1" max="10">
+                    <button class="quantity-btn" onclick="updateQuantity(1)">+</button>
+                </div>
+            </div>
+
+            <button class="add-to-cart" onclick="addToCart()">Добавить в корзину</button>
+            <button class="add-to-wishlist" onclick="addToWishlist()">В избранное</button>
+
+            <div class="product-details">
+                <p class="details-title">Состав:</p>
+                <p class="details-text">100% хлопок</p>
+
+                <p class="details-title">Уход:</p>
+                <p class="details-text">
+                    Машинная стирка при 30°C
+                    Не отбеливать
+                    Гладить при средней температуре
+                </p>
+
+                <p class="details-title">Артикул:</p>
+                <p class="details-text">123456789</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function selectColor(element) {
+            document.querySelectorAll('.color-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            element.classList.add('selected');
+        }
+
+        function selectSize(element) {
+            document.querySelectorAll('.size-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            element.classList.add('selected');
+        }
+
+        function updateQuantity(change) {
+            const input = document.querySelector('.quantity-input');
+            let value = parseInt(input.value) + change;
+            value = Math.max(1, Math.min(10, value));
+            input.value = value;
+        }
+
+        function addToCart() {
+            const size = document.querySelector('.size-option.selected').textContent;
+            const color = document.querySelector('.color-option.selected').style.background;
+            const quantity = document.querySelector('.quantity-input').value;
+            
+            alert(`Товар добавлен в корзину!\nРазмер: ${size}\nЦвет: ${color}\nКоличество: ${quantity}`);
+        }
+
+        function addToWishlist() {
+            alert('Товар добавлен в избранное!');
+        }
+    </script>
+</body>
+</html>
