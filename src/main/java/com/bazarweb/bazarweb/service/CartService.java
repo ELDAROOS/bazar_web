@@ -27,9 +27,12 @@ public class CartService {
     public Cart findOrCreateCartByEmail(String email) {
         User user = userRepository.getUserByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with email: " + email));
-        Optional<Cart> cartOptional = cartRepository.findById(user.getId());
-        return cartOptional.orElseGet(() -> createCart(user));
+        
+        // Ищем корзину по userId, чтобы избежать дублирования
+        Optional<Cart> cartOptional = cartRepository.findByUserId(user.getId());  // Предположим, что у вас есть метод findByUserId
+        return cartOptional.orElseGet(() -> createCart(user));  // Если корзины нет - создаём новую
     }
+    
 
     private Cart createCart(User user) {
         return cartRepository.save(new Cart(user));

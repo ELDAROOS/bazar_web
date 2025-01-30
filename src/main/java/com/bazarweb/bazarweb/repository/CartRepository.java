@@ -12,4 +12,5 @@ import org.springframework.stereotype.Repository;
 public interface CartRepository extends JpaRepository<Cart, Integer> {
     Optional<Cart> findById(int id);
     Optional<Cart> findByUser(User user);
+    Optional<Cart> findByUserId(int userId); // Пример метода для поиска корзины по userId
 }
