@@ -205,20 +205,27 @@ document.addEventListener("DOMContentLoaded", function () {
         return response.json();
     })
     .then(data => {
-        // Фильтрация данных, чтобы оставить только продукты с gender = 'MALE'
-        const maleProducts = data.filter(product => product.gender === 'MALE');
+        if (!Array.isArray(data)) {
+            throw new Error("Неверный формат данных: ожидался массив");
+        }
+
+        const maleProducts = data.filter(product => product.gender?.toUpperCase() === 'MALE');
 
         const catalog = document.getElementById("catalog-items");
+        if (!catalog) {
+            console.error("Элемент с ID 'catalog-items' не найден.");
+            return;
+        }
+        
         catalog.innerHTML = "";
 
         maleProducts.forEach(product => {
             const item = document.createElement("div");
             item.classList.add("catalog-item");
 
-            // Добавляем ссылку на отдельную страницу с ID продукта
             item.innerHTML = `
                 <a href="product.html?id=${product.id}" style="text-decoration: none; color: inherit;">
-                    <img src="${product.imageUrl || 'default-image.jpg'}" alt="${product.name}">
+                    <img src="${product.imageUrl || 'default-image.jpg'}" alt="${product.name || 'Изображение недоступно'}">
                     <h3>${product.name}</h3>
                     <p>Цена: ${product.price} KZT</p>
                 </a>
@@ -231,7 +238,6 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error("Ошибка загрузки данных:", error);
     });
 });
-
 
     </script>
 

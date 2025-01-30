@@ -186,53 +186,63 @@
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const token = localStorage.getItem('token');
-    
-            const headers = token ? {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            } : {
-                'Content-Type': 'application/json'
-            };
-    
-            fetch("http://localhost:8080/api/product/all", {
-                method: 'GET',
-                headers: headers
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`Ошибка HTTP: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                // Фильтрация данных по полю gender = 'MALE'
-                const maleProducts = data.filter(product => product.gender === 'FEMALE');
-    
-                const catalog = document.getElementById("catalog-items");
-                catalog.innerHTML = "";  // Очищаем каталог перед добавлением новых товаров
-    
-                maleProducts.forEach(product => {
-                    const item = document.createElement("div");
-                    item.classList.add("catalog-item");
-    
-                    // Добавляем данные товара
-                    item.innerHTML = `
-                        <a href="product.html?id=${product.id}" style="text-decoration: none; color: inherit;">
-                            <img src="${product.imageUrl || 'default-image.jpg'}" alt="${product.name}">
-                            <h3>${product.name}</h3>
-                            <p>${product.price} KZT</p>
-                        </a>
-                    `;
-    
-                    catalog.appendChild(item);
-                });
-            })
-            .catch(error => {
-                console.error("Ошибка загрузки данных:", error);
-            });
+document.addEventListener("DOMContentLoaded", function () {
+    const token = localStorage.getItem('token');
+
+    const headers = token ? {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+    } : {
+        'Content-Type': 'application/json'
+    };
+
+    fetch("http://localhost:8080/api/product/all", {
+        method: 'GET',
+        headers: headers
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Ошибка HTTP: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (!Array.isArray(data)) {
+            throw new Error("Ошибка: получены некорректные данные (ожидался массив)");
+        }
+
+        // Фильтрация продуктов по gender = 'FEMALE'
+        const femaleProducts = data.filter(product => product.gender?.toUpperCase() === 'FEMALE');
+
+        const catalog = document.getElementById("catalog-items");
+        if (!catalog) {
+            console.error("Ошибка: не найден элемент с ID 'catalog-items'");
+            return;
+        }
+
+        catalog.innerHTML = "";  // Очищаем каталог перед добавлением новых товаров
+
+        femaleProducts.forEach(product => {
+            const item = document.createElement("div");
+            item.classList.add("catalog-item");
+
+            // Заполняем карточку товара
+            item.innerHTML = `
+                <a href="product.html?id=${product.id}" style="text-decoration: none; color: inherit;">
+                    <img src="${product.imageUrl || 'default-image.jpg'}" alt="${product.name || 'Изображение недоступно'}">
+                    <h3>${product.name}</h3>
+                    <p>Цена: ${product.price} KZT</p>
+                </a>
+            `;
+
+            catalog.appendChild(item);
         });
+    })
+    .catch(error => {
+        console.error("Ошибка загрузки данных:", error);
+    });
+});
+
     </script>
 
 </body>
