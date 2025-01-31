@@ -178,7 +178,7 @@
     </div>
 
     <!-- Заголовок каталога -->
-    <div class="catalog-title">Мужская коллекция</div>
+    <div class="catalog-title">Женская коллекция</div>
 
     <!-- Товары каталога (будет заполнено динамически) -->
     <div class="catalog-items" id="catalog-items">
@@ -186,64 +186,108 @@
     </div>
 
     <script>
-document.addEventListener("DOMContentLoaded", function () {
-    const token = localStorage.getItem('token');
-
-    const headers = token ? {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-    } : {
-        'Content-Type': 'application/json'
-    };
-
-    fetch("http://localhost:8080/api/product/all", {
-        method: 'GET',
-        headers: headers
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`Ошибка HTTP: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        if (!Array.isArray(data)) {
-            throw new Error("Ошибка: получены некорректные данные (ожидался массив)");
-        }
-
-        // Фильтрация продуктов по gender = 'FEMALE'
-        const femaleProducts = data.filter(product => product.gender?.toUpperCase() === 'FEMALE');
-
-        const catalog = document.getElementById("catalog-items");
-        if (!catalog) {
-            console.error("Ошибка: не найден элемент с ID 'catalog-items'");
-            return;
-        }
-
-        catalog.innerHTML = "";  // Очищаем каталог перед добавлением новых товаров
-
-        femaleProducts.forEach(product => {
-            const item = document.createElement("div");
-            item.classList.add("catalog-item");
-
-            // Заполняем карточку товара
-            item.innerHTML = `
-                <a href="product.html?id=${product.id}" style="text-decoration: none; color: inherit;">
-                    <img src="${product.imageUrl || 'default-image.jpg'}" alt="${product.name || 'Изображение недоступно'}">
-                    <h3>${product.name}</h3>
-                    <p>Цена: ${product.price} KZT</p>
-                </a>
-            `;
-
-            catalog.appendChild(item);
+        document.addEventListener("DOMContentLoaded", function () {
+            const token = localStorage.getItem('token');
+        
+            // Находим кнопку регистрации
+            const authButton = document.querySelector(".auth-cart button:first-child");
+        
+            if (token) {
+                authButton.textContent = "Профиль";
+                authButton.onclick = function () {
+                    window.location.href = "/profile.html";
+                };
+            } else {
+                authButton.textContent = "Присоединиться к BAZAR";
+                authButton.onclick = function () {
+                    window.location.href = "/register.html";
+                };
+            }
+        
+            // Функция загрузки товаров с сервера (GET-запрос)
+            function fetchProducts() {
+                let url = "http://localhost:8080/api/product/all";
+        
+                const headers = {
+                    "Content-Type": "application/json",
+                    ...(token && { "Authorization": `Bearer ${token}` })
+                };
+        
+                console.log("Отправляемый запрос:", { url, method: "GET", headers });
+        
+                fetch(url, {
+                    method: "GET",
+                    headers: headers
+                })
+                .then(async response => {
+                    console.log("Ответ сервера (статус):", response.status);
+                    console.log("Ответ сервера (заголовки):", Object.fromEntries(response.headers.entries()));
+        
+                    const responseBody = await response.text(); // Получаем полный ответ в виде текста
+                    console.log("Ответ сервера (тело):", responseBody);
+        
+                    if (!response.ok) {
+                        throw new Error(`Ошибка HTTP: ${response.status}`);
+                    }
+        
+                    return JSON.parse(responseBody); // Преобразуем в JSON
+                })
+                .then(data => {
+                    console.log("Ответ сервера (JSON-данные):", data);
+        
+                    if (!Array.isArray(data)) {
+                        throw new Error("Неверный формат данных: ожидался массив");
+                    }
+        
+                    const catalog = document.getElementById("catalog-items");
+                    if (!catalog) {
+                        console.error("Элемент с ID 'catalog-items' не найден.");
+                        return;
+                    }
+        
+                    catalog.innerHTML = "";
+        
+                    // Определяем фильтр по текущему пути
+                    const currentPage = window.location.pathname;
+                    let genderFilter = null;
+        
+                    if (currentPage.includes("men-collection.html")) {
+                        genderFilter = "MALE";
+                    } else if (currentPage.includes("women-collection.html")) {
+                        genderFilter = "FEMALE";
+                    } else if (currentPage.includes("teens-collection.html")) {
+                        genderFilter = "TEEN";
+                    }
+        
+                    // Фильтруем товары по полю gender
+                    const filteredProducts = genderFilter ? data.filter(product => product.gender === genderFilter) : data;
+        
+                    console.log("Отфильтрованные товары:", filteredProducts);
+        
+                    filteredProducts.forEach(product => {
+                        const item = document.createElement("div");
+                        item.classList.add("catalog-item");
+        
+                        item.innerHTML = `
+                            <a href="product.html?id=${product.id}" style="text-decoration: none; color: inherit;">
+                                <img src="${product.imageUrl || 'default-image.jpg'}" alt="${product.name || 'Изображение недоступно'}">
+                                <h3>${product.name}</h3>
+                                <p>Цена: ${product.price} KZT</p>
+                            </a>
+                        `;
+        
+                        catalog.appendChild(item);
+                    });
+                })
+                .catch(error => {
+                    console.error("Ошибка загрузки данных:", error);
+                });
+            }
+        
+            fetchProducts();
         });
-    })
-    .catch(error => {
-        console.error("Ошибка загрузки данных:", error);
-    });
-});
-
-    </script>
+        
+            </script>
 
 </body>
 </html>

@@ -14,7 +14,6 @@ import com.bazarweb.bazarweb.service.ImageService;
 import java.io.IOException;
 import java.nio.file.Files;
 
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 

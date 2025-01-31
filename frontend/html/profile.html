@@ -182,22 +182,23 @@
 <body>
     <header class="header">
         <nav class="nav">
-            <div class="logo">BAZAR</div>
+            <div class="logo">
+                <a href="/index.html" style="text-decoration: none; color: inherit;">BAZAR</a>
+            </div>
             <div class="nav-links">
-                <a href="#">Женщины</a>
-                <a href="#">Мужчины</a>
-                <a href="#">Новинки</a>
-                <a href="#">Распродажа</a>
+                <a href="/women-collection.html">Женщины</a>
+                <a href="/men-collection.html">Мужчины</a>
             </div>
         </nav>
     </header>
+    
 
     <div class="profile-container">
         <div class="profile-header">
             <div class="profile-avatar">👤</div>
             <div class="profile-info">
-                <h1>Иван Иванов</h1>
-                <p>ivan@example.com</p>
+                <h1 id="userName">Иван Иванов</h1>
+                <p id="userEmail">ivan@example.com</p>
             </div>
         </div>
 
@@ -286,32 +287,86 @@
     </div>
 
     <script>
-        function showTab(tabId) {
-            // Hide all tab contents
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.style.display = 'none';
-            });
-            
-            // Remove active class from all tabs
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            // Show selected tab content and activate tab
-            document.getElementById(tabId).style.display = 'block';
-            document.querySelector(`[onclick="showTab('${tabId}')"]`).classList.add('active');
+        // Функция для получения токена из localStorage и проверки его наличия
+        function getToken() {
+            const token = localStorage.getItem('jwtToken');
+            if (!token) {
+                alert('Пожалуйста, войдите в систему.');
+            }
+            console.log("Токен из localStorage:", token);
+            console.log("Весь localStorage:", localStorage);
+            return token;
         }
-
-        // Form submissions
-        document.getElementById('profileForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Изменения сохранены!');
-        });
-
-        document.getElementById('passwordForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Пароль успешно изменен!');
-        });
+    
+        // Функция для извлечения ID из JWT
+        function getUserIdFromJWT(token) {
+            if (!token) return null;
+    
+            const payload = token.split('.')[1]; // Извлекаем полезную нагрузку из JWT (вторая часть после точки)
+            const decoded = atob(payload); // Декодируем из base64
+            const user = JSON.parse(decoded); // Преобразуем строку в объект
+    
+            return user.id; // Возвращаем ID из полезной нагрузки
+        }
+    
+        // Функция для отправки GET запроса по URI
+        function fetchUserProfile() {
+            const token = getToken();
+            if (!token) return;
+    
+            const userId = getUserIdFromJWT(token);
+            if (!userId) {
+                alert('Ошибка: не удалось получить ID пользователя.');
+                return;
+            }
+    
+            // Формируем URI с использованием ID из токена
+            const uri = `http://localhost:8080/api/profile/${userId}`;
+    
+            // Логируем адрес запроса
+            console.log("Запрос отправляется на адрес:", uri);
+    
+            // Отправляем GET запрос
+            fetch(uri, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}` // Добавляем JWT в заголовки
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('userName').textContent = data.name;
+                document.getElementById('userEmail').textContent = data.email;
+                // Можно обновить информацию на странице в зависимости от полученных данных
+            })
+            .catch(error => {
+                console.error('Ошибка при получении данных:', error);
+            });
+        }
+    
+        // Функция для отображения активной вкладки
+        function showTab(tabName) {
+            const tabs = document.querySelectorAll('.tab');
+            const contents = document.querySelectorAll('.tab-content');
+    
+            // Убираем активный класс с всех вкладок и скрываем все вкладки
+            tabs.forEach(tab => tab.classList.remove('active'));
+            contents.forEach(content => content.style.display = 'none');
+    
+            // Добавляем активный класс на выбранную вкладку и показываем соответствующий контент
+            document.querySelector(`.tab[onclick="showTab('${tabName}')"]`).classList.add('active');
+            document.getElementById(tabName).style.display = 'block';
+        }
+    
+        // Вызываем функцию для загрузки данных профиля при загрузке страницы
+        window.onload = function() {
+            fetchUserProfile();
+            // По умолчанию показываем вкладку "Личные данные"
+            showTab('personal');
+        };
     </script>
+    
+    
+    
 </body>
 </html>

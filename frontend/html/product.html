@@ -23,7 +23,7 @@
             max-width: 100%;
             border-radius: 5px;
         }
-        .back-button {
+        .back-button, .add-to-cart-button {
             margin-top: 20px;
             padding: 10px 20px;
             background: black;
@@ -31,6 +31,9 @@
             border: none;
             cursor: pointer;
             text-transform: uppercase;
+        }
+        .add-to-cart-button {
+            background-color: #28a745;
         }
     </style>
 </head>
@@ -45,6 +48,7 @@
         <p><strong>Статус:</strong> <span id="product-status"></span></p>
         <p><strong>Количество в наличии:</strong> <span id="product-quantity"></span></p>
         <button class="back-button" onclick="window.history.back()">Назад</button>
+        <button class="add-to-cart-button" onclick="addToCart()">Добавить в корзину</button>
     </div>
 
     <script>
@@ -58,6 +62,12 @@
             }
 
             const token = localStorage.getItem('token');
+            const email = localStorage.getItem('email');  // Получаем email из localStorage (если есть)
+
+            // Логирование параметров
+            console.log("productId:", productId);
+            console.log("Token из localStorage:", token);
+            console.log("Email из localStorage:", email);
 
             const headers = token ? {
                 'Authorization': `Bearer ${token}`,
@@ -66,17 +76,23 @@
                 'Content-Type': 'application/json'
             };
 
+            // Логирование запроса
+            console.log("Отправка запроса на URL: http://localhost:8080/api/product/" + productId);
+            console.log("Заголовки запроса:", headers);
+
             fetch(`http://localhost:8080/api/product/${productId}`, {
                 method: 'GET',
                 headers: headers
             })
             .then(response => {
                 if (!response.ok) {
+                    console.error("Ошибка HTTP:", response.status);
                     throw new Error(`Ошибка HTTP: ${response.status}`);
                 }
                 return response.json();
             })
             .then(product => {
+                console.log("Ответ от сервера:", product); // Логируем ответ от сервера
                 document.getElementById("product-name").textContent = product.name;
                 document.getElementById("product-image").src = product.imageUrl || "default-image.jpg";
                 document.getElementById("product-description").textContent = product.description;
@@ -86,9 +102,71 @@
                 document.getElementById("product-quantity").textContent = product.quantity;
             })
             .catch(error => {
+                console.error("Ошибка загрузки данных:", error);
                 document.body.innerHTML = `<h2>Ошибка загрузки данных: ${error.message}</h2>`;
             });
         });
+
+        function addToCart() {
+            const productId = new URLSearchParams(window.location.search).get("id");
+            const productName = document.getElementById("product-name").textContent;
+            const productPrice = document.getElementById("product-price").textContent;
+            const email = localStorage.getItem('email'); // Получаем email пользователя из localStorage
+
+            // Логирование значений переменных перед отправкой
+            console.log("productId:", productId);
+            console.log("productName:", productName);
+            console.log("productPrice:", productPrice);
+            console.log("Email из localStorage:", email);
+
+            if (!productId || !productName || !productPrice || !email) {
+                alert("Ошибка: Не удалось добавить товар в корзину.");
+                console.error("Ошибка: Не удалось добавить товар в корзину, отсутствуют данные.");
+                return;
+            }
+
+            const productData = {
+                email: email,
+                productId: productId,
+                quantity: 1 // Можно заменить на динамическое количество, если оно меняется
+            };
+
+            const token = localStorage.getItem('token');
+            const headers = token ? {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            } : {
+                'Content-Type': 'application/json'
+            };
+
+            // Логирование информации о запросе
+            console.log("Нажата кнопка 'Добавить в корзину'");
+            console.log("Отправка запроса на URL: http://localhost:8080/api/cart/add");
+            console.log("Заголовки запроса:", headers);
+            console.log("Тело запроса:", JSON.stringify(productData));
+
+            fetch("http://localhost:8080/api/cart/add", {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify(productData)
+            })
+            .then(response => {
+                console.log("Статус ответа на запрос добавления в корзину:", response.status);
+                if (!response.ok) {
+                    console.error("Ошибка при добавлении в корзину:", response.status);
+                    throw new Error(`Ошибка HTTP: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("Ответ от сервера:", data);  // Логируем ответ сервера
+                alert(`${productName} был добавлен в корзину.`);
+            })
+            .catch(error => {
+                console.error("Ошибка при добавлении в корзину:", error);
+                alert(`Ошибка: ${error.message}`);
+            });
+        }
     </script>
 
 </body>

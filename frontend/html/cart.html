@@ -227,10 +227,8 @@
         <nav class="nav">
             <div class="logo">BAZAR</div>
             <div class="nav-links">
-                <a href="#">Женщины</a>
-                <a href="#">Мужчины</a>
-                <a href="#">Новинки</a>
-                <a href="#">Распродажа</a>
+                <a href="/women-collection.html">Женский</a>
+                <a href="/men-collection.html">Мужской</a>
             </div>
         </nav>
     </header>
@@ -302,52 +300,156 @@
     </div>
 
     <script>
-        function updateQuantity(itemId, change) {
-            const input = event.target.parentElement.querySelector('.quantity-input');
-            let value = parseInt(input.value) + change;
-            value = Math.max(1, Math.min(10, value));
-            input.value = value;
-            updateTotal();
-        }
-
-        function removeItem(itemId) {
-            const item = event.target.closest('.cart-item');
-            item.remove();
-            updateTotal();
-            
-            // Проверяем, остались ли товары в корзине
-            const items = document.querySelectorAll('.cart-item');
-            if (items.length === 0) {
-                showEmptyCart();
+        document.addEventListener("DOMContentLoaded", function () {
+            const token = localStorage.getItem("token");
+            const cartContainer = document.querySelector(".cart-items");
+            const totalPriceElement = document.querySelector(".total-row span:last-child");
+        
+            function fetchCart() {
+                if (!token) {
+                    console.log("Токен не найден. Пользователь не авторизован.");
+                    return;
+                }
+        
+                const email = getEmailFromToken(token);
+                if (!email) {
+                    console.error("Ошибка: не удалось получить email из токена.");
+                    return;
+                }
+        
+                const url = `http://localhost:8080/api/cart?email=${encodeURIComponent(email)}`;
+                console.log(`📡 Отправка запроса: GET ${url}`);
+        
+                fetch(url, {
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    }
+                })
+                .then(response => {
+                    console.log(`✅ Ответ сервера [${response.status} ${response.statusText}]`);
+                    return response.json().then(data => ({ status: response.status, body: data }));
+                })
+                .then(({ status, body }) => {
+                    console.log("📦 Данные от сервера:", body);
+                    if (status === 200) {
+                        // Извлекаем массив items из полученных данных
+                        if (Array.isArray(body.items)) {
+                            renderCart(body.items, body.totalPrice);  // Передаем массив items и общую цену
+                        } else {
+                            console.error("Ошибка: поле 'items' не является массивом.");
+                            cartContainer.innerHTML = "<p>Ошибка загрузки корзины.</p>";
+                        }
+                    } else {
+                        console.error("Ошибка загрузки корзины:", body);
+                    }
+                })
+                .catch(error => {
+                    console.error("❌ Ошибка запроса:", error);
+                });
             }
-        }
-
-        function showEmptyCart() {
-            const cartItems = document.querySelector('.cart-items');
-            cartItems.innerHTML = `
-                <div class="empty-cart">
-                    <h2>Корзина пуста</h2>
-                    <p>Добавьте товары из каталога</p>
-                    <a href="#" class="continue-shopping">Продолжить покупки</a>
-                </div>
-            `;
-            document.querySelector('.cart-summary').style.display = 'none';
-        }
-
-        function updateTotal() {
-            // В реальном проекте здесь был бы пересчет стоимости
-            console.log('Updating total...');
-        }
-
-        function applyPromo() {
-            const promoInput = document.querySelector('.promo-input');
-            alert(`Промокод ${promoInput.value} применен!`);
-        }
-
-        function checkout() {
-            alert('Переход к оформлению заказа...');
-            // Здесь будет переход на страницу оформления заказа
-        }
-    </script>
+        
+            function getEmailFromToken(token) {
+                try {
+                    const payload = JSON.parse(atob(token.split(".")[1]));
+                    return payload.email;
+                } catch (error) {
+                    console.error("Ошибка при декодировании токена:", error);
+                    return null;
+                }
+            }
+        
+            function renderCart(items, totalPrice) {
+                cartContainer.innerHTML = "<h1>Корзина</h1>";
+        
+                if (items.length === 0) {
+                    cartContainer.innerHTML += `
+                        <div class="empty-cart">
+                            <h2>Ваша корзина пуста</h2>
+                            <a href="/" class="continue-shopping">Продолжить покупки</a>
+                        </div>
+                    `;
+                    totalPriceElement.textContent = "0 ₽";
+                    return;
+                }
+        
+                items.forEach(item => {
+                    const cartItem = document.createElement("div");
+                    cartItem.classList.add("cart-item");
+                    cartItem.innerHTML = `
+                        <img src="${item.image}" alt="${item.name}">
+                        <div class="item-details">
+                            <div>
+                                <h3 class="item-title">${item.name}</h3>
+                                <p>Размер: ${item.size}</p>
+                                <p>Цвет: ${item.color}</p>
+                            </div>
+                            <p class="item-price">${item.price.toLocaleString()} ₽</p>
+                        </div>
+                        <div class="item-actions">
+                            <div class="quantity-controls">
+                                <button class="quantity-btn" onclick="updateQuantity(${item.id}, -1)">-</button>
+                                <input type="number" class="quantity-input" value="${item.quantity}" min="1" max="10" data-id="${item.id}">
+                                <button class="quantity-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
+                            </div>
+                            <button class="remove-btn" onclick="removeItem(${item.id})">✕</button>
+                        </div>
+                    `;
+                    cartContainer.appendChild(cartItem);
+                });
+        
+                totalPriceElement.textContent = `${totalPrice.toLocaleString()} ₽`;
+            }
+        
+            function updateQuantity(itemId, change) {
+                const input = document.querySelector(`.quantity-input[data-id="${itemId}"]`);
+                let newQuantity = parseInt(input.value) + change;
+        
+                if (newQuantity < 1) newQuantity = 1;
+                input.value = newQuantity;
+        
+                console.log(`🔄 Изменение количества товара ID ${itemId}: ${newQuantity}`);
+        
+                fetch(`http://localhost:8080/api/cart/update`, {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ itemId, quantity: newQuantity })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("✅ Обновленный ответ корзины:", data);
+                    fetchCart();
+                })
+                .catch(error => console.error("❌ Ошибка обновления количества:", error));
+            }
+        
+            function removeItem(itemId) {
+                console.log(`🗑 Удаление товара ID ${itemId}`);
+        
+                fetch(`http://localhost:8080/api/cart/remove`, {
+                    method: "DELETE",
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ itemId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("✅ Товар удален:", data);
+                    fetchCart();
+                })
+                .catch(error => console.error("❌ Ошибка удаления товара:", error));
+            }
+        
+            fetchCart();
+        });
+        </script>
+        
+        
 </body>
 </html>

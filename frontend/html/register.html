@@ -75,8 +75,6 @@
     </div>
     
     <script>
-        const backendUrl = 'http://localhost:8080/auth';
-
         document.getElementById('registerForm').addEventListener('submit', async (event) => {
             event.preventDefault();
 
@@ -85,7 +83,7 @@
             const email = document.getElementById('email').value;
 
             try {
-                const response = await fetch(`${backendUrl}/sign-up`, {
+                const response = await fetch(`http://localhost:8080/auth/sign-up`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -97,9 +95,11 @@
                     const data = await response.json();
 
                     if (data.token) { // Проверяем, что сервер вернул токен
-                        localStorage.setItem('token', data.token); // Сохраняем токен
+                        localStorage.setItem('token', data.token); // Сохраняем токен в localStorage
+                        localStorage.setItem('email', email); // Сохраняем email в localStorage
                         console.log('Токен сохранен:', data.token); // Выводим токен в консоль
-                        alert('Регистрация успешна! Токен сохранён.');
+                        console.log('Email сохранен:', email); // Логируем email
+                        alert('Регистрация успешна! Токен и email сохранены.');
                         window.location.href = '/index.html'; // Перенаправляем в каталог
                     } else {
                         alert('Регистрация успешна, но токен не получен.');
@@ -114,7 +114,6 @@
                 alert('Не удалось зарегистрироваться. Проверьте соединение с сервером.');
             }
         });
-
     </script>
 </body>
 </html>
